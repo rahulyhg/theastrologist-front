@@ -1,159 +1,404 @@
 #!/bin/env node
-//  OpenShift sample Node application
-var express = require('express');
-var fs      = require('fs');
 
 
-/**
- *  Define the sample application.
- */
-var SampleApp = function() {
+var util = require('util'),
+    http = require('http'),
+    fs = require('fs'),
+    url = require('url'),
+    events = require('events');
 
-    //  Scope.
+var DEFAULT_PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
+function main(argv) {
+    new HttpServer({
+        'GET': createServlet(StaticServlet),
+        'POST': createServlet(StaticServlet),
+        'HEAD': createServlet(StaticServlet)
+    }).start(Number(argv[2]) || DEFAULT_PORT);
+}
+
+function escapeHtml(value) {
+    return value.toString().
+        replace('<', '&lt;').
+        replace('>', '&gt;').
+        replace('"', '&quot;');
+}
+
+function createServlet(Class) {
+    var servlet = new Class();
+    return servlet.handleRequest.bind(servlet);
+
+}
+
+
+function HttpServer(handlers) {
+
+
+    this.handlers = handlers;
+    this.server = http.createServer(this.handleRequest_.bind(this));
+
+}
+
+HttpServer.prototype.start = function (port) {
+
+    this.port = process.env.OPENSHIFT_NODEJS_PORT;
+    this.server.listen(port, process.env.OPENSHIFT_NODEJS_IP);
+
+};
+
+HttpServer.prototype.parseUrl_ = function (urlString) {
+    var parsed = url.parse(urlString);
+    parsed.pathname = url.resolve('./app/', parsed.pathname);
+    return url.parse(url.format(parsed), true);
+};
+
+HttpServer.prototype.handleRequest_ = function (req, res) {
+    var logEntry = req.method + ' ' + req.url;
+    if (req.headers['user-agent']) {
+        logEntry += ' ' + req.headers['user-agent'];
+    }
+    console.log(logEntry);
+    req.url = this.parseUrl_(req.url);
+    var handler = this.handlers[req.method];
+    if (!handler) {
+        res.writeHead(501);
+        res.end();
+    } else {
+        handler.call(this, req, res);
+    }
+};
+
+
+function StaticServlet() {
+}
+
+StaticServlet.MimeMap = {
+    'txt': 'text/plain',
+    'html': 'text/html',
+    'css': 'text/css',
+    'xml': 'application/xml',
+    'json': 'application/json',
+    'js': 'application/javascript',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'gif': 'image/gif',
+    'png': 'image/png',
+    'svg': 'image/svg+xml'
+};
+
+StaticServlet.prototype.handleRequest = function (req, res) {
+    var self = this;
+    var path = ('./app/' + req.url.pathname).replace('//', '/').replace(/%(..)/g, function (match, hex) {
+        return String.fromCharCode(parseInt(hex, 16));
+    });
+    var parts = path.split('/');
+    if (parts[parts.length - 1].charAt(0) === '.')
+        return self.sendForbidden_(req, res, path);
+
+    if (req.method === 'POST') {
+        if (self.attemptingToAccessOutsideLocalAppPath(parts)) {
+            return self.sendForbidden_(req, res, path);
+        }
+
+        return self.writeFile_(req, res, path);
+    }
+
+    self.findAndSendTarget(req, path, res, self);
+}
+
+StaticServlet.prototype.findAndSendTarget = function (req, path, res, self) {
+    fs.stat(path, function (err, stat) {
+        if (err && path.indexOf('/') >= 0)
+            return self.sendMissing_(req, res, path);
+        else if (err) {
+            if (path.indexOf('.json') == -1) {
+                return self.findAndSendTarget(req, path + ".json", res, self);
+            }
+            return self.sendDefault_(req, res);
+        }
+
+        if (fs.fileExistsSync(path + ".json")) {
+            return self.findAndSendTarget(req, path + ".json", res, self);
+        }
+
+        var indexOfLastSlash = path.lastIndexOf('/');
+        var indexOfSecondToLastSlash = path.lastIndexOf('/', indexOfLastSlash - 1);
+        var secondToLastNode = path.substr(indexOfSecondToLastSlash + 1, indexOfLastSlash - indexOfSecondToLastSlash - 1);
+        if (stat.isDirectory() && secondToLastNode != "event" && secondToLastNode != "user") {
+            if (path.indexOf('/data/') == -1) {
+                return self.sendDefault_(req, res);
+            }
+            return self.sendAllJsonFilesAppended_(req, res, path);
+        }
+        return self.sendFile_(req, res, path);
+    });
+}
+
+StaticServlet.prototype.attemptingToAccessOutsideLocalAppPath = function (pathParts) {
+    if (pathParts[0] !== '.')
+        return true;
+
+    for (var idx = 0; idx < pathParts.length; idx++) {
+        if (pathParts[idx].indexOf("..") != -1 || pathParts[idx].indexOf("c:\\") != -1 || pathParts[idx].indexOf("/c/") != -1) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
+StaticServlet.prototype.sendError_ = function (req, res, error) {
+    res.writeHead(500, {
+        'Content-Type': 'text/html'
+    });
+    res.write('<!doctype html>\n');
+    res.write('<title>Internal Server Error</title>\n');
+    res.write('<h1>Internal Server Error</h1>');
+    res.write('<pre>' + escapeHtml(util.inspect(error)) + '</pre>');
+    console.error('500 Internal Server Error');
+    console.error(util.inspect(error));
+};
+
+StaticServlet.prototype.sendMissing_ = function (req, res, path) {
+    path = path.substring(1);
+    res.writeHead(404, {
+        'Content-Type': 'text/html'
+    });
+    res.write('<!doctype html>\n');
+    res.write('<title>404 Not Found</title>\n');
+    res.write('<h1>Not Found</h1>');
+    res.write(
+        '<p>The requested URL ' +
+        escapeHtml(path) +
+        ' was not found on this server.</p>'
+    );
+    res.end();
+    console.error('404 Not Found: ' + path);
+};
+
+StaticServlet.prototype.sendForbidden_ = function (req, res, path) {
+    path = path.substring(1);
+    res.writeHead(403, {
+        'Content-Type': 'text/html'
+    });
+    res.write('<!doctype html>\n');
+    res.write('<title>403 Forbidden</title>\n');
+    res.write('<h1>Forbidden</h1>');
+    res.write(
+        '<p>You do not have permission to access ' +
+        escapeHtml(path) + ' on this server.</p>'
+    );
+    res.end();
+    console.log('403 Forbidden: ' + path);
+};
+
+StaticServlet.prototype.sendRedirect_ = function (req, res, redirectUrl) {
+    res.writeHead(301, {
+        'Content-Type': 'text/html',
+        'Location': redirectUrl
+    });
+    res.write('<!doctype html>\n');
+    res.write('<title>301 Moved Permanently</title>\n');
+    res.write('<h1>Moved Permanently</h1>');
+    res.write(
+        '<p>The document has moved <a href="' +
+        redirectUrl +
+        '">here</a>.</p>'
+    );
+    res.end();
+    console.log('301 Moved Permanently: ' + redirectUrl);
+};
+
+StaticServlet.prototype.sendDefault_ = function (req, res) {
+    var self = this;
+    var path = 'app/index.html'
+
+    var file = fs.createReadStream(path);
+    res.writeHead(200, {
+        'Content-Type': StaticServlet.
+            MimeMap[path.split('.').pop()] || 'text/plain'
+    });
+    if (req.method === 'HEAD') {
+        res.end();
+    } else {
+        file.on('data', res.write.bind(res));
+        file.on('close', function () {
+            res.end();
+        });
+        file.on('error', function (error) {
+            self.sendError_(req, res, error);
+        });
+    }
+};
+
+StaticServlet.prototype.sendFile_ = function (req, res, path) {
+    var self = this;
+    var file = fs.createReadStream(path);
+    res.writeHead(200, {
+        'Content-Type': StaticServlet.
+            MimeMap[path.split('.').pop()] || 'text/plain'
+    });
+    if (req.method === 'HEAD') {
+        res.end();
+    } else {
+        file.on('data', res.write.bind(res));
+        file.on('close', function () {
+            res.end();
+        });
+        file.on('error', function (error) {
+            self.sendError_(req, res, error);
+        });
+    }
+};
+
+StaticServlet.prototype.sendAllJsonFilesAppended_ = function (req, res, path) {
+    var self = this;
+    var files = []
+    try {
+        files = fs.readdirSync(path);
+    }
+    catch (e) {
+        self.writeSuccessHeader(res, path);
+        res.write("[]");
+        res.end();
+    }
+    var results = "[";
+    for (var idx = 0; idx < files.length; idx++) {
+        if (files[idx].indexOf(".json") == files[idx].length - 5) {
+            results += fs.readFileSync(path + "/" + files[idx]) + ",";
+        }
+    }
+    results = results.substr(0, results.length - 1);
+    results += "]";
+    self.writeSuccessHeader(res, path);
+    res.write(results);
+    res.end();
+
+};
+
+StaticServlet.prototype.writeFile_ = function (req, res, path) {
     var self = this;
 
-
-    /*  ================================================================  */
-    /*  Helper functions.                                                 */
-    /*  ================================================================  */
-
-    /**
-     *  Set up server IP address and port # using env variables/defaults.
-     */
-    self.setupVariables = function() {
-        //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
-
-        if (typeof self.ipaddress === "undefined") {
-            //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-            //  allows us to run/test the app locally.
-            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
-        };
-    };
-
-
-    /**
-     *  Populate the cache.
-     */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
+    res.writeHead(200, {
+        'Content-Type': 'text/plain'
+    });
+    if (req.method === 'HEAD') {
+        res.end();
+    } else {
+        var targetDir = path.substr(0, path.lastIndexOf('/'));
+        var dirExists;
+        try {
+            var stats = fs.lstatSync(targetDir);
+            dirExists = stats.isDirectory();
+        } catch (e) {
+            dirExists = false;
         }
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
-
-
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    self.cache_get = function(key) { return self.zcache[key]; };
-
-
-    /**
-     *  terminator === the termination handler
-     *  Terminate server on receipt of the specified signal.
-     *  @param {string} sig  Signal to terminate on.
-     */
-    self.terminator = function(sig){
-        if (typeof sig === "string") {
-           console.log('%s: Received %s - terminating sample app ...',
-                       Date(Date.now()), sig);
-           process.exit(1);
+        if (!dirExists) {
+            fs.mkdirSyncRecursive(targetDir);
         }
-        console.log('%s: Node server stopped.', Date(Date.now()) );
-    };
+        var writeStream = fs.createWriteStream(path + ".json");
+        req.pipe(writeStream);
 
-
-    /**
-     *  Setup termination handlers (for exit and a list of signals).
-     */
-    self.setupTerminationHandlers = function(){
-        //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(); });
-
-        // Removed 'SIGPIPE' from the list - bugz 852598.
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function(element, index, array) {
-            process.on(element, function() { self.terminator(element); });
+        req.on('end', function () {
+            res.writeHead(200, {"content-type": "text/html"});
+            res.end('<html><body>Save Successful</body></html>');
         });
-    };
 
-
-    /*  ================================================================  */
-    /*  App server functions (main app logic here).                       */
-    /*  ================================================================  */
-
-    /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-    };
-
-
-    /**
-     *  Initialize the server (express) and create the routes and register
-     *  the handlers.
-     */
-    self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
-
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
-    };
-
-
-    /**
-     *  Initializes the sample application.
-     */
-    self.initialize = function() {
-        self.setupVariables();
-        self.populateCache();
-        self.setupTerminationHandlers();
-
-        // Create the express server and routes.
-        self.initializeServer();
-    };
-
-
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                        Date(Date.now() ), self.ipaddress, self.port);
+        writeStream.on('error', function (err) {
+            console.log(err);
+            self.sendError_(req, res, err);
         });
-    };
+    }
+};
 
-};   /*  Sample Application.  */
+StaticServlet.prototype.writeSuccessHeader = function (res, path) {
+    res.writeHead(200, {
+        'Content-Type': StaticServlet.
+            MimeMap[path.split('.').pop()] || 'text/plain'
+    });
+}
+StaticServlet.prototype.sendDirectory_ = function (req, res, path) {
+    var self = this;
+    if (path.match(/[^\/]$/)) {
+        req.url.pathname += '/';
+        var redirectUrl = url.format(url.parse(url.format(req.url)));
+        return self.sendRedirect_(req, res, redirectUrl);
+    }
+    fs.readdir(path, function (err, files) {
+        if (err)
+            return self.sendError_(req, res, error);
 
+        if (!files.length)
+            return self.writeDirectoryIndex_(req, res, path, []);
 
+        var remaining = files.length;
+        files.forEach(function (fileName, index) {
+            fs.stat(path + '/' + fileName, function (err, stat) {
+                if (err)
+                    return self.sendError_(req, res, err);
+                if (stat.isDirectory()) {
+                    files[index] = fileName + '/';
+                }
+                if (!(--remaining))
+                    return self.writeDirectoryIndex_(req, res, path, files);
+            });
+        });
+    });
+};
 
-/**
- *  main():  Main code.
- */
-var zapp = new SampleApp();
-zapp.initialize();
-zapp.start();
+StaticServlet.prototype.writeDirectoryIndex_ = function (req, res, path, files) {
+    path = path.substring(1);
+    res.writeHead(200, {
+        'Content-Type': 'text/html'
+    });
+    if (req.method === 'HEAD') {
+        res.end();
+        return;
+    }
+    res.write('<!doctype html>\n');
+    res.write('<title>' + escapeHtml(path) + '</title>\n');
+    res.write('<style>\n');
+    res.write('  ol { list-style-type: none; font-size: 1.2em; }\n');
+    res.write('</style>\n');
+    res.write('<h1>Directory: ' + escapeHtml(path) + '</h1>');
+    res.write('<ol>');
+    files.forEach(function (fileName) {
+        if (fileName.charAt(0) !== '.') {
+            res.write('<li><a href="' +
+                escapeHtml(fileName) + '">' +
+                escapeHtml(fileName) + '</a></li>');
+        }
+    });
+    res.write('</ol>');
+    res.end();
+};
 
+var path = require('path');
+
+fs.fileExistsSync = function (filePath) {
+    try {
+        var stats = fs.lstatSync(filePath);
+
+        return stats.isFile();
+    }
+    catch (e) {
+        return false;
+    }
+}
+
+fs.mkdirSyncRecursive = function (dirPath) {
+
+    try {
+        fs.mkdirSync(dirPath)
+    } catch (e) {
+
+        fs.mkdirSyncRecursive(path.dirname(dirPath));
+
+        fs.mkdirSyncRecursive(dirPath);
+
+    }
+
+};
+
+main(process.argv);
