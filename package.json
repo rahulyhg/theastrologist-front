@@ -1,35 +1,35 @@
 {
-  "name": "OpenShift-Sample-App",
+  "name": "theastrologist-front",
   "version": "1.0.0",
-  "description": "OpenShift Sample Application",
-  "keywords": [
-    "OpenShift",
-    "Node.js",
-    "application",
-    "openshift"
-  ],
+  "description": "Front side og TheAstrologist application",
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "Samy Amirou",
+    "email": "samyamirou@gmail.com"
   },
-  "homepage": "http://www.openshift.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/openshift/origin-server"
   },
-
   "engines": {
     "node": ">= 0.6.0",
     "npm": ">= 1.0.0"
   },
-
   "dependencies": {
     "express": "~3.4.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "karma": "~0.10",
+    "karma-jasmine": "~0.1",
+    "karma-junit-reporter": "~0.1",
+    "karma-ng-scenario": "~0.1",
+    "phantomjs": "~1.9"
+  },
   "bundleDependencies": [],
-
   "private": true,
-  "main": "server.js"
+  "main": "scripts/server.js",
+  "scripts": {
+    "start": "node scripts/server.js"
+  }
 }
