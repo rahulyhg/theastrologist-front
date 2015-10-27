@@ -17,8 +17,10 @@ module.exports = function(config) {
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-route/angular-route.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
+      'app/bower_components/jasmine-promise-matchers/dist/jasmine-promise-matchers.js',
       'app/common/src/**/*.js',
-      'test/**/*.js'
+      'app/partial/**/*.js',
+      'test/**/*-spec.js'
     ],
 
 
