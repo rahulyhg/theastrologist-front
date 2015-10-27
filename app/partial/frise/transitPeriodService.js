@@ -3,8 +3,8 @@
  */
 angular.module('theastrologist.services')
     .factory('transitPeriodService', ['$http', '$log', '$q', 'cacheService', function ($http, $log, $q, cacheService) {
-        //var urlPrefix = 'http://localhost:9090/theastrologist/rest';
-        var urlPrefix = 'https://rest-theastrologist.rhcloud.com/rest/transitperiod/';
+        //var urlPrefix = 'http://localhost:9090/theastrologist/rest/transitperiod';
+        var urlPrefix = 'https://rest-theastrologist.rhcloud.com/rest/transitperiod';
 
         var constructUri = function (natalDate, startDate, endDate, latitude, longitude) {
 
@@ -25,7 +25,7 @@ angular.module('theastrologist.services')
                         var def = $q.defer();
                         $http({
                             method: 'GET',
-                            url: urlPrefix + uri,
+                            url: urlPrefix + '/' + uri,
                             crossDomain: true
                         }).success(function (data) {
                             def.resolve(data);

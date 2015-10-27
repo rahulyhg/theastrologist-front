@@ -1,5 +1,58 @@
+md-toolbar.ta-toolbar {
+    z-index: 10;
+}
+
 .md-toolbar-tools {
-    box-shadow: 0 0 4px rgba(0,0,0,.14),0 4px 8px rgba(0,0,0,.28);
+    box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+}
+
+.view {
+    overflow: hidden;
+}
+
+md-content.frise {
+    background-color: #eee;
+}
+
+.theme_picker {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.54);
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    z-index: 2;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .14), 0 1px 1px rgba(0, 0, 0, .28);
+    transition: all 0.5s ease 0s, visibility 0s linear 0.5s;
+    top: 0;
+    transform: translateY(60px);
+}
+
+.theme_picker.ng-hide {
+    transition: all 0.5s ease 0s, visibility 0s linear 0.5s;
+    transform: translateY(-100%);
+    z-index: 0;
+}
+
+.theme_picker .md-inline-form > * {
+    margin: 15px 5px;
+}
+
+.theme_picker md-datepicker {
+    background-color: inherit;
+    min-width: 120px;
+}
+
+.theme_picker md-autocomplete[md-floating-label] md-input-container {
+    margin: 0;
+    padding-bottom: 0;
+}
+
+.time_input {
+    max-width: 5em;
+    min-width: 70px;
+}
+
+.theme_picker form.md-inline-form {
+    flex-wrap: wrap;
 }
 
 /*Feu*/

@@ -5,6 +5,8 @@
 angular.module('theastrologist', [
     'ngRoute',
     'ngMaterial',
+    'ngAnimate',
+    'ngAria',
     'theastrologist.filters',
     'theastrologist.services',
     'theastrologist.directives',
@@ -19,5 +21,5 @@ angular.module('theastrologist', [
 
 angular.module('theastrologist.controllers', []);
 angular.module('theastrologist.services', []);
-angular.module('theastrologist.directives', []);
+angular.module('theastrologist.directives', ['mdPickers']);
 angular.module('theastrologist.filters', []);
