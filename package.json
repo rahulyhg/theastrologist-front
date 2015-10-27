@@ -1,6 +1,6 @@
 {
   "name": "theastrologist-front",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Front side of TheAstrologist application",
   "author": {
     "name": "Samy Amirou",
@@ -29,6 +29,7 @@
   "private": true,
   "main": "scripts/server.js",
   "scripts": {
-    "start": "node scripts/server.js"
+    "start": "node scripts/server.js",
+    "postinstall": "HOME=$OPENSHIFT_REPO_DIR bower install || bower install"
   }
 }
