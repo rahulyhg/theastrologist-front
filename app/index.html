@@ -1,36 +1,36 @@
 <!doctype html>
 <html lang="en" ng-app="theastrologist">
 <head>
-  <meta charset="utf-8">
-  <title>The Astrologist</title>
-  <link rel="stylesheet" href="common/styles/app.css"/>
-  <link href="bower_components/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
+    <meta charset="utf-8">
+    <title>The Astrologist</title>
+    <link rel="stylesheet" href="common/styles/app.css"/>
+    <link href="bower_components/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-  <ul class="menu">
+<ul class="menu">
     <li><a href="#/timeline/1985-01-04T11:20:00+01:00/2013-01-01/2017-12-31/48.6456630/2.4104510">Timeline</a></li>
-  </ul>
+</ul>
 
-  <div ng-view></div>
+<div ng-view></div>
 
-  <div>The astrologist: v<span app-version></span></div>
+<div>The astrologist: v<span app-version></span></div>
 
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-  -->
-  <!-- Librairies -->
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/vis/dist/vis.js"></script>
+<!-- In production use:
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
+-->
+<!-- Librairies -->
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/vis/dist/vis.js"></script>
 
-  <!-- Fichiers -->
-  <script src="common/src/app.js"></script>
-  <script src="common/src/service/services.js"></script>
-  <script src="common/src/service/cacheService.js"></script>
-  <script src="common/src/filter/filters.js"></script>
-  <script src="common/src/directive/directives.js"></script>
-  <script src="partial/frise/timelineCtrl.js"></script>
-  <script src="partial/frise/transitPeriodService.js"></script>
+<!-- Fichiers -->
+<script src="common/src/app.js"></script>
+<script src="common/src/service/services.js"></script>
+<script src="common/src/service/cacheService.js"></script>
+<script src="common/src/filter/filters.js"></script>
+<script src="common/src/directive/directives.js"></script>
+<script src="partial/frise/timelineCtrl.js"></script>
+<script src="partial/frise/transitPeriodService.js"></script>
 </body>
 </html>

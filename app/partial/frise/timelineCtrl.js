@@ -5,13 +5,23 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
     '$scope', '$routeParams', 'transitPeriodService',
     function ($scope, $routeParams, transitPeriodService) {
         var self = this;
+
+        var planetList = ['JUPITER', 'SATURNE', 'URANUS', 'NEPTUNE', 'PLUTON', 'NOEUD_NORD_MOYEN', 'LILITH_MOYENNE'];
+
+        var orders = {
+            CONJONCTION: 0,
+            OPPOSITION: 1,
+            TRIGONE: 1,
+            CARRE: 2,
+            SEXTILE: 2
+        };
+
         angular.element(document).ready(function () {
             // Configuration for the Timeline
             var options = {};
             items = new vis.DataSet([{id: 12048, content: 'tutu', start: '2013-06-01', end: '2013-06-10'}]);
 
-            var groupIds = ['JUPITER', 'SATURNE', 'URANUS', 'NEPTUNE', 'PLUTON', 'NOEUD_NORD_MOYEN', 'LILITH_MOYENNE'];
-            var groups = new vis.DataSet([
+            var planetGroups = new vis.DataSet([
                 {id: 'NOEUD_NORD_MOYEN', content: 'Noeud nord', value: 1},
                 {id: 'PLUTON', content: 'Pluton', value: 2},
                 {id: 'NEPTUNE', content: 'Neptune', value: 3},
@@ -21,35 +31,13 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
                 {id: 'LILITH_MOYENNE', content: 'Lune noire moyenne', value: 7}
             ]);
 
-            var orders = {
-                CONJONCTION: 0,
-                OPPOSITION: 1,
-                TRIGONE: 1,
-                CARRE: 2,
-                SEXTILE: 2
-            };
 
             var promise = transitPeriodService($routeParams.natalDate, $routeParams.startDate, $routeParams.endDate,
                 $routeParams.latitude, $routeParams.longitude);
 
             promise.then(function (data) {
-                $.each(groupIds, function (index, value) {
-                    var group = value;
-                    var period = data.periods[group];
-
-                    // Create a DataSet (allows two way data-binding)
-                    $.map(period, function (value, index) {
-                        var el = {
-                            id: group + '-' + index,
-                            content: value.aspect + ' ' + value.natalPlanet,
-                            start: value.startDate,
-                            end: value.endDate,
-                            group: group,
-                            order: orders[value.aspect]
-                        };
-                        items.add(el);
-                    });
-                });
+                fillPlanetPeriods(data);
+                fillHousePeriods(data);
 
                 // DOM element where the Timeline will be attached
                 var container = document.getElementById('visualization');
@@ -62,8 +50,49 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
                         return a.order - b.order;
                     }
                 });
-                timeline.setGroups(groups);
+                timeline.setGroups(planetGroups);
                 timeline.setItems(items);
             });
         });
+
+        var fillPlanetPeriods = function (data) {
+            angular.forEach(planetList, function (value, index) {
+                var planet = value;
+                var period = data.planetPeriods[planet];
+
+                // Create a DataSet (allows two way data-binding)
+                $.map(period, function (value, index) {
+                    var el = {
+                        id: planet + '-' + index,
+                        content: value.aspect + ' ' + value.natalPlanet,
+                        start: value.startDate,
+                        end: value.endDate,
+                        group: planet,
+                        order: orders[value.aspect]
+                    };
+                    items.add(el);
+                });
+            });
+        };
+
+        var fillHousePeriods = function (data) {
+            angular.forEach(planetList, function (value, index) {
+                var planet = value;
+                var period = data.housePeriods[planet];
+
+                // Create a DataSet (allows two way data-binding)
+                $.map(period, function (value, index) {
+                    var el = {
+                        id: planet + '-' + value.natalHouse + '-' + index,
+                        content: value.natalHouse,
+                        start: value.startDate,
+                        end: value.endDate,
+                        group: planet,
+                        type: 'background',
+                        className: value.natalHouse
+                    };
+                    items.add(el);
+                });
+            });
+        };
     }]);
