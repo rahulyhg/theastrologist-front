@@ -5,15 +5,29 @@
     <title>The Astrologist</title>
     <link rel="stylesheet" href="common/styles/app.css"/>
     <link href="bower_components/vis/dist/vis.css" rel="stylesheet" type="text/css"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-<ul class="menu">
-    <li><a href="#/timeline/1985-01-04T11:20:00+01:00/2013-01-01/2017-12-31/48.6456630/2.4104510">Timeline</a></li>
-</ul>
 
-<div ng-view></div>
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <h2>
+            <span>The Astrologist</span>
+        </h2>
+        <span class="flex"></span>
+        <md-button class="md-icon-button" aria-label="Timeline" href="#/timeline/1985-01-04T11:20:00+01:00/2013-01-01/2017-12-31/48.6456630/2.4104510">
+            <md-icon class="material-icons md-light">event_note</md-icon>
+        </md-button>
+    </div>
 
-<div>The astrologist: v<span app-version></span></div>
+</md-toolbar>
+
+
+<div ng-view>
+
+</div>
 
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
@@ -21,7 +35,9 @@
 <!-- Librairies -->
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
-<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular-aria/angular-aria.js"></script>
+<script src="bower_components/angular-animate/angular-animate.js"></script>
+<script src="bower_components/angular-material/angular-material.js"></script>
 <script src="bower_components/vis/dist/vis.js"></script>
 
 <!-- Fichiers -->

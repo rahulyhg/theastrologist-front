@@ -52,7 +52,13 @@ directive('timeline', [function () {
             planet: '@',
             data: '='
         },
-        template: '<div><span>{{planet}}</span></div>',
+        template:
+        '<md-card id="{{planet}}-viz">' +
+        '   <md-card-content>' +
+        '       <h2 class="md-title">{{planet}}</h2>' +
+        '       <div class="planet-timeline"></div>' +
+        '   </md-card-content>' +
+        '</md-card>',
         compile: function (element, attribut) {
             return function (scope, elm, attr) {
                 scope.$watchGroup(['planet', 'data'], function (newValues, oldValues, scope) {
@@ -66,7 +72,8 @@ directive('timeline', [function () {
                         fillPlanetPeriods(planetPeriods, items, planet);
                         fillHousePeriods(housePeriods, items, planet);
 
-                        var localFrise = new vis.Timeline(elm[0]);
+                        var myElement = document.querySelector('#' + planet + '-viz .planet-timeline');
+                        var localFrise = new vis.Timeline(myElement);
                         localFrise.setOptions(options);
                         localFrise.setItems(items);
                     }

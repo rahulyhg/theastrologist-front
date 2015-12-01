@@ -4,6 +4,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('theastrologist', [
     'ngRoute',
+    'ngMaterial',
     'theastrologist.filters',
     'theastrologist.services',
     'theastrologist.directives',

@@ -1,5 +1,4 @@
-<p>
-    A basic timeline. You can move and zoom the timeline, and select items.
-</p>
+<md-content flex layout-padding class="frise md-padding">
+    <timeline ng-repeat='planet in planetList' planet='{{planet}}' data='data'></timeline>
+</md-content>
 
-<timeline ng-repeat='planet in planetList' planet='{{planet}}' data='data'></timeline>

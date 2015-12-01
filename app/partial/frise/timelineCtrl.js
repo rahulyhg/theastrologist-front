@@ -4,7 +4,15 @@
 angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
     '$scope', '$routeParams', 'transitPeriodService',
     function ($scope, $routeParams, transitPeriodService) {
-        $scope.planetList = ['JUPITER', 'SATURNE', 'URANUS', 'NEPTUNE', 'PLUTON', 'NOEUD_NORD_MOYEN', 'LILITH_MOYENNE'];
+        $scope.planetList = [
+            'NOEUD_NORD_MOYEN',
+            'PLUTON',
+            'NEPTUNE',
+            'URANUS',
+            'SATURNE',
+            'JUPITER',
+            'LILITH_MOYENNE'
+        ];
 
         var promise = transitPeriodService($routeParams.natalDate, $routeParams.startDate, $routeParams.endDate,
             $routeParams.latitude, $routeParams.longitude);
