@@ -58,16 +58,18 @@ directive('timeline', [function () {
                 scope.$watchGroup(['planet', 'data'], function (newValues, oldValues, scope) {
                     var planet = newValues[0];
                     var data = newValues[1];
-                    var planetPeriods = data.planetPeriods[planet];
-                    var housePeriods = data.housePeriods[planet];
+                    if (planet && data) {
+                        var planetPeriods = data.planetPeriods[planet];
+                        var housePeriods = data.housePeriods[planet];
 
-                    var items = new vis.DataSet();
-                    fillPlanetPeriods(planetPeriods, items, planet);
-                    fillHousePeriods(housePeriods, items, planet);
+                        var items = new vis.DataSet();
+                        fillPlanetPeriods(planetPeriods, items, planet);
+                        fillHousePeriods(housePeriods, items, planet);
 
-                    var localFrise = new vis.Timeline(elm[0]);
-                    localFrise.setOptions(options);
-                    localFrise.setItems(items);
+                        var localFrise = new vis.Timeline(elm[0]);
+                        localFrise.setOptions(options);
+                        localFrise.setItems(items);
+                    }
                 });
             };
         }
