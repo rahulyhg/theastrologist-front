@@ -16,11 +16,11 @@ directive('timeline', [function () {
     ]);
 
     const aspectGroups = {
-        CONJONCTION: { groupId: 'conj', groupItemClass: 'item-conjonction' },
-        OPPOSITION: { groupId: 'princ', groupItemClass: 'item-negatif' },
-        TRIGONE: { groupId: 'princ', groupItemClass: 'item-positif' },
-        CARRE: { groupId: 'second', groupItemClass: 'item-negatif' },
-        SEXTILE: { groupId: 'second', groupItemClass: 'item-positif' }
+        CONJONCTION: {groupId: 'conj', groupItemClass: 'item-conjonction'},
+        OPPOSITION: {groupId: 'princ', groupItemClass: 'item-negatif'},
+        TRIGONE: {groupId: 'princ', groupItemClass: 'item-positif'},
+        CARRE: {groupId: 'second', groupItemClass: 'item-negatif'},
+        SEXTILE: {groupId: 'second', groupItemClass: 'item-positif'}
     };
 
     const aspectOrders = {
@@ -91,6 +91,10 @@ directive('timeline', [function () {
                         localFrise.setOptions(options);
                         localFrise.setGroups(groups);
                         localFrise.setItems(items);
+                        scope.$parent.registerTimeline(planet, localFrise);
+                        var window = localFrise.getWindow();
+                        scope.$parent.onRangeChange(localFrise, window.start, window.end);
+                        scope.localFrise = localFrise;
                     }
                 });
             };
