@@ -1,3 +1,4 @@
+/* TOOLBAR */
 md-toolbar.ta-toolbar {
     z-index: 10;
 }
@@ -10,10 +11,7 @@ md-toolbar.ta-toolbar {
     overflow: hidden;
 }
 
-md-content.frise {
-    background-color: #eee;
-}
-
+/* THEME PICKER */
 .theme_picker {
     position: absolute;
     color: rgba(0, 0, 0, 0.54);
@@ -53,6 +51,43 @@ md-content.frise {
 
 .theme_picker form.md-inline-form {
     flex-wrap: wrap;
+}
+
+/* FRISE */
+md-content.frise {
+    background-color: #eee;
+}
+
+.aspect-group-conj .vis-item.vis-range,
+.aspect-group-second .vis-item.vis-range,
+.aspect-group-princ .vis-item.vis-range {
+    border: none;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+.vis-item.item-conjonction {
+    background-color: #d3f3dd;
+    color: darkgreen;
+}
+
+.aspect-group-princ .vis-item.item-negatif {
+    background-color: #f98383;
+    color: #9a0707;
+}
+
+.aspect-group-second .vis-item.item-negatif {
+    background-color: 	#ffcccc;
+    color: #ee3f3f;
+}
+
+.aspect-group-princ .vis-item.item-positif {
+    background-color: 	#a6cbe7;
+    color: #175888;
+}
+
+.aspect-group-second .vis-item.item-positif {
+    background-color: #d2e5f3;
+    color: 	#227ec3;
 }
 
 /*Feu*/

@@ -2,8 +2,8 @@
  * Created by Samy on 23/10/2015.
  */
 angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
-        '$scope', '$routeParams', '$mdBottomSheet', 'transitPeriodService',
-        function ($scope, $routeParams, $mdBottomSheet, transitPeriodService) {
+        '$scope', '$routeParams', 'transitPeriodService',
+        function ($scope, $routeParams, transitPeriodService) {
 
             $scope.planetList = [
                 'NOEUD_NORD_MOYEN',
