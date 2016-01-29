@@ -21,6 +21,7 @@
             <md-icon class="material-icons md-light">event_note</md-icon>
         </md-button>
     </div>
+    <http-loader></http-loader>
 </md-toolbar>
 
 <div flex class="view" ng-view layout="column">
@@ -45,8 +46,10 @@
 <script src="common/src/app.js"></script>
 <script src="common/src/service/services.js"></script>
 <script src="common/src/service/cacheService.js"></script>
+<script src="common/src/service/httpLoaderInterceptor.js"></script>
 <script src="common/src/filter/filters.js"></script>
 <script src="common/src/directive/timelineDirective.js"></script>
+<script src="common/src/directive/httpLoader.js"></script>
 <script src="common/src/directive/themePicker/geolocService.js"></script>
 <script src="common/src/directive/themePicker/themePickerDirective.js"></script>
 <script src="partial/frise/timelineCtrl.js"></script>

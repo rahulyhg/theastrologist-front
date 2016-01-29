@@ -2,7 +2,9 @@
  * Created by Samy on 24/10/2015.
  */
 angular.module('theastrologist.services')
-    .factory('transitPeriodService', ['$http', '$log', '$q', 'cacheService', function ($http, $log, $q, cacheService) {
+    .factory('transitPeriodService', [
+        '$http', '$log', '$q', 'cacheService',
+        function ($http, $log, $q, cacheService) {
         //var urlPrefix = 'http://localhost:9090/theastrologist/rest/transitperiod';
         var urlPrefix = 'https://rest-theastrologist.rhcloud.com/rest/transitperiod';
 

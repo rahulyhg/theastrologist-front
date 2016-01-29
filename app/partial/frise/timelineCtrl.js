@@ -16,15 +16,22 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
             'LILITH_MOYENNE'
         ];
 
-        var promise = transitPeriodService($routeParams.natalDate, $routeParams.startDate, $routeParams.endDate,
-            $routeParams.latitude, $routeParams.longitude);
+        function updateData(startDate, endDate) {
+            transitPeriodService(
+                $routeParams.natalDate,
+                startDate, endDate,
+                $routeParams.latitude,
+                $routeParams.longitude
+            ).then(function (data) {
+                $scope.data = data;
+            });
+        }
 
-        promise.then(function (data) {
-            $scope.data = data;
-        });
+        updateData($routeParams.startDate, $routeParams.endDate);
 
         this.timelines = [];
         $scope.onRangeChange = function (planet, start, end) {
+
             for (loopPlanet in that.timelines) {
                 if (planet != loopPlanet) {
                     var line = that.timelines[loopPlanet];

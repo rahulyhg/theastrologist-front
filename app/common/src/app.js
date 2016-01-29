@@ -17,6 +17,8 @@ angular.module('theastrologist', [
         controller: 'timelineCtrl'
     });
     $routeProvider.otherwise({redirectTo: '/timeline'});
+}]).config(['$httpProvider', function ($httpProvider) {
+    $httpProvider.interceptors.push('httpLoaderInterceptor');
 }]);
 
 angular.module('theastrologist.controllers', []);
