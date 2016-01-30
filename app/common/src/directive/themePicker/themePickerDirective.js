@@ -7,26 +7,15 @@
 
 
 angular.module('theastrologist.directives')
-    .controller('themePickerController', ['$scope', '$location', '$filter', '$q', 'geolocService', '$mdpDatePicker', '$mdpTimePicker',
+    .controller('themePickerController', [
+        '$scope', '$location', '$filter', '$q', 'geolocService',
+        '$mdpDatePicker', '$mdpTimePicker',
         function ($scope, $location, $filter, $q, geolocService, $mdpDatePicker, $mdpTimePicker) {
             var that = this;
-            var dateFilter = $filter('date');
 
-            var filterDate = function (date) {
-                return dateFilter(date, 'yyyy-MM-dd');
-            };
-
-            var filterTime = function (time) {
-                return dateFilter(time, 'HH:mm');
-            };
-
-            var filterNatalDate = function (natalDate, time) {
-                return filterDate(natalDate, 'yyyy-MM-dd') + 'T' + time;
-            };
-
-            this.showTimePicker = function(ev) {
-                $mdpTimePicker(ev, $scope.currentDate).then(function(selectedTime) {
-                    $scope.time = filterTime(selectedTime);
+            this.showTimePicker = function (ev) {
+                $mdpTimePicker(ev, $scope.currentDate).then(function (selectedTime) {
+                    $scope.time = $filter('isoTime')(selectedTime);
                 });
             };
 
@@ -37,9 +26,9 @@ angular.module('theastrologist.directives')
                 var minDate = new Date(currentYear - 3, currentDate.getMonth(), currentDate.getDay());
                 var maxDate = new Date(currentYear + 3, currentDate.getMonth(), currentDate.getDay());
                 var path = '/timeline/'
-                    + filterNatalDate(natalDate, time) + '/'
-                    + filterDate(minDate) + '/'
-                    + filterDate(maxDate) + '/'
+                    + $filter('isoDateTime')(natalDate, time) + '/'
+                    + $filter('isoDate')(minDate) + '/'
+                    + $filter('isoDate')(maxDate) + '/'
                     + that.selectedItem.latitude + '/'
                     + that.selectedItem.longitude;
                 $location.path(path);

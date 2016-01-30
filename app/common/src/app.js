@@ -21,7 +21,7 @@ angular.module('theastrologist', [
     $httpProvider.interceptors.push('httpLoaderInterceptor');
 }]);
 
-angular.module('theastrologist.controllers', []);
+angular.module('theastrologist.filters', []);
 angular.module('theastrologist.services', []);
 angular.module('theastrologist.directives', ['mdPickers']);
-angular.module('theastrologist.filters', []);
+angular.module('theastrologist.controllers', []);

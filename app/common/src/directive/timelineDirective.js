@@ -6,7 +6,9 @@
 angular.module('theastrologist.directives').
 directive('timeline', [function () {
     const options = {
-        orientation: {axis: 'top', item: 'top'}
+        orientation: {axis: 'top', item: 'top'},
+        zoomMin: 1000 * 60 * 60 * 24 * 31,             // one day in milliseconds
+        zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 4 // 2 ans
     };
 
     const groups = new vis.DataSet([
@@ -34,7 +36,7 @@ directive('timeline', [function () {
     var fillPlanetPeriods = function (periods, items, planet) {
         angular.forEach(periods, function (value, index) {
             var el = {
-                id: planet + '-' + index,
+                id: planet + '-' + index + '-' + value.startDate,
                 content: value.natalPlanet,
                 start: value.startDate,
                 end: value.endDate,
@@ -82,19 +84,25 @@ directive('timeline', [function () {
                         var planetPeriods = data.planetPeriods[planet];
                         var housePeriods = data.housePeriods[planet];
 
-                        var items = new vis.DataSet();
-                        fillPlanetPeriods(planetPeriods, items, planet);
-                        fillHousePeriods(housePeriods, items, planet);
-
-                        var myElement = document.querySelector('#' + planet + '-viz .planet-timeline');
-                        var localFrise = new vis.Timeline(myElement);
-                        localFrise.setOptions(options);
-                        localFrise.setGroups(groups);
-                        localFrise.setItems(items);
-                        scope.$parent.registerTimeline(planet, localFrise);
-                        var window = localFrise.getWindow();
-                        scope.$parent.onRangeChange(localFrise, window.start, window.end);
-                        scope.localFrise = localFrise;
+                        if (!scope.localFrise) {
+                            var items = new vis.DataSet();
+                            fillPlanetPeriods(planetPeriods, items, planet);
+                            fillHousePeriods(housePeriods, items, planet);
+                            var myElement = document.querySelector('#' + planet + '-viz .planet-timeline');
+                            var localFrise = new vis.Timeline(myElement);
+                            localFrise.setOptions(options);
+                            localFrise.setGroups(groups);
+                            localFrise.setItems(items);
+                            scope.$parent.registerTimeline(planet, localFrise);
+                            var window = localFrise.getWindow();
+                            scope.$parent.onRangeChange(localFrise, window.start, window.end);
+                            scope.localFrise = localFrise;
+                            scope.items = items;
+                        } else {
+                            // Si la frise existe déjà on met juste à jour avec des nouveaux éléments
+                            fillPlanetPeriods(planetPeriods, scope.items, planet);
+                            fillHousePeriods(housePeriods, scope.items, planet);
+                        }
                     }
                 });
             };
