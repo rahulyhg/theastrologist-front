@@ -51,7 +51,7 @@ directive('timeline', [function () {
     var fillHousePeriods = function (periods, items, planet) {
         angular.forEach(periods, function (value, index) {
             var el = {
-                id: planet + '-' + value.natalHouse + '-' + index,
+                id: planet + '-' + value.natalHouse + '-' + index + '-' + value.startDate,
                 content: value.natalHouse,
                 start: value.startDate,
                 end: value.endDate,

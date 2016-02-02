@@ -19,6 +19,7 @@ angular.module('theastrologist', [
     $routeProvider.otherwise({redirectTo: '/timeline'});
 }]).config(['$httpProvider', function ($httpProvider) {
     $httpProvider.interceptors.push('httpLoaderInterceptor');
+    $httpProvider.interceptors.push('requestsErrorHandler');
 }]);
 
 angular.module('theastrologist.filters', []);
