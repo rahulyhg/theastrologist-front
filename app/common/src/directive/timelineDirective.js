@@ -2,12 +2,10 @@
 
 /* Directives */
 
-
-angular.module('theastrologist.directives').
-directive('timeline', [function () {
+angular.module('theastrologist.directives').directive('timeline', [function () {
     const options = {
         orientation: {axis: 'top', item: 'top'},
-        zoomMin: 1000 * 60 * 60 * 24 * 31,             // one day in milliseconds
+        zoomMin: 1000 * 60 * 60 * 24 * 31,         // one day in milliseconds
         zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 4 // 2 ans
     };
 
@@ -35,6 +33,7 @@ directive('timeline', [function () {
 
     var fillPlanetPeriods = function (periods, items, planet) {
         angular.forEach(periods, function (value, index) {
+            // TODO : data.get(1), data.update(item)
             var el = {
                 id: planet + '-' + index + '-' + value.startDate,
                 content: value.natalPlanet,

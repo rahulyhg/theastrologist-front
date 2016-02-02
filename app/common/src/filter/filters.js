@@ -9,7 +9,7 @@ angular.module('theastrologist.filters')
         };
     }])
     .filter('isoDateTime', ['$filter', function ($filter) {
-        return function (date) {
+        return function (date, time) {
             return $filter('isoDate')(date) + 'T' + time;
         };
     }])
