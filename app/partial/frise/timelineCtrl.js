@@ -17,8 +17,11 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
         ];
 
         this.promise = null;
-        this.visibleStartDate = $routeParams.startDate;
-        this.visibleEndDate = $routeParams.endDate;
+        $scope.visibleStartDate = $routeParams.startDate;
+        $scope.visibleEndDate = $routeParams.endDate;
+
+        $scope.lastQueriedStartDate = null;
+        $scope.lastQueriedEndDate = null;
 
         this.queryDataAndUpdateFrise = function (start, end) {
             that.promise = transitPeriodService(
@@ -28,6 +31,8 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
                 $routeParams.longitude
             );
             that.promise.then(function (data) {
+                $scope.lastQueriedStartDate = start;
+                $scope.lastQueriedEndDate = end;
                 $scope.data = data;
             });
         };
@@ -38,16 +43,16 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
         $scope.onRangeChange = function (planet, start, end) {
             if (that.promise.$$state.status !== 0) {
                 // Si pas pending
-                var startDate = new Date(that.visibleStartDate);
-                var endDate = new Date(that.visibleEndDate);
+                var startDate = new Date($scope.visibleStartDate);
+                var endDate = new Date($scope.visibleEndDate);
                 if (start < startDate) {
                     // Chargement de la date avant
-                    that.visibleStartDate = $filter('isoDate')(new Date(startDate.getFullYear() - 6, startDate.getMonth(), startDate.getDay()));
-                    that.queryDataAndUpdateFrise(that.visibleStartDate, $filter('isoDate')(startDate));
+                    $scope.visibleStartDate = $filter('isoDate')(new Date(startDate.getFullYear() - 6, startDate.getMonth(), startDate.getDay()));
+                    that.queryDataAndUpdateFrise($scope.visibleStartDate, $filter('isoDate')(startDate));
                 } else if (end > endDate) {
                     // Chargement de la date avant
-                    that.visibleEndDate = $filter('isoDate')(new Date(endDate.getFullYear() + 6, endDate.getMonth(), endDate.getDay()));
-                    that.queryDataAndUpdateFrise($filter('isoDate')(endDate), that.visibleEndDate);
+                    $scope.visibleEndDate = $filter('isoDate')(new Date(endDate.getFullYear() + 6, endDate.getMonth(), endDate.getDay()));
+                    that.queryDataAndUpdateFrise($filter('isoDate')(endDate), $scope.visibleEndDate);
                 }
             }
 

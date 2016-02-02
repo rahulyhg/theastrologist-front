@@ -31,23 +31,72 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
         SEXTILE: 2
     };
 
-    var fillPlanetPeriods = function (periods, items, planet) {
+    var fillPlanetPeriods = function (periods, items, planet, scope) {
+        var $parent = scope.$parent;
+        var lastQueriedEndDate = $parent.lastQueriedEndDate;
+        var lastQueriedStartDate = $parent.lastQueriedStartDate;
+
+        var visibleEndDate = $parent.visibleEndDate;
+        var visibleStartDate = $parent.visibleStartDate;
+
+        var future = new Date($parent.lastQueriedStartDate) > new Date($parent.visibleStartDate);
+
         angular.forEach(periods, function (value, index) {
+            var aspectObject = aspectGroups[value.aspect];
             // TODO : data.get(1), data.update(item)
-            var el = {
-                id: planet + '-' + index + '-' + value.startDate,
-                content: value.natalPlanet,
-                start: value.startDate,
-                end: value.endDate,
-                group: aspectGroups[value.aspect].groupId,
-                order: aspectOrders[value.aspect],
-                className: aspectGroups[value.aspect].groupItemClass
-            };
-            items.add(el);
+            var existingPrefix = planet + '-' + value.aspect + '-' + value.natalPlanet + '-';
+            var existing = null;
+            var startDate = value.startDate;
+            var endDate = value.endDate;
+
+            if (value.endDate == lastQueriedEndDate && !future) {
+                // Cas où on scroll vers le passé, on cherche les "first"
+                existing = items.get(existingPrefix + 'first');
+                if (existing) {
+                    endDate = existing.end;
+                }
+            } else if (value.startDate == lastQueriedStartDate && future) {
+                // Cas où on scroll vers le futur, on cherche les "last"
+                existing = items.get(existingPrefix + 'last');
+                if (existing) {
+                    startDate = existing.start;
+                }
+            }
+
+            if (existing) {
+                var lastId = existing.id;
+                items.remove(lastId);
+                existing.id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-' + value.startDate;
+                existing.start = startDate;
+                existing.end = endDate;
+                items.update(existing);
+            } else {
+                var id;
+                if (value.startDate == visibleStartDate) {
+                    id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-first';
+                } else {
+                    if (value.endDate == visibleEndDate) {
+                        id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-last';
+                    } else {
+                        id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-' + value.startDate;
+                    }
+                }
+
+                var el = {
+                    id: id,
+                    content: value.natalPlanet,
+                    start: value.startDate,
+                    end: value.endDate,
+                    group: aspectObject.groupId,
+                    order: aspectOrders[value.aspect],
+                    className: aspectObject.groupItemClass
+                };
+                items.add(el);
+            }
         });
     };
 
-    var fillHousePeriods = function (periods, items, planet) {
+    var fillHousePeriods = function (periods, items, planet, scope) {
         angular.forEach(periods, function (value, index) {
             var el = {
                 id: planet + '-' + value.natalHouse + '-' + index + '-' + value.startDate,
@@ -85,8 +134,8 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
 
                         if (!scope.localFrise) {
                             var items = new vis.DataSet();
-                            fillPlanetPeriods(planetPeriods, items, planet);
-                            fillHousePeriods(housePeriods, items, planet);
+                            fillPlanetPeriods(planetPeriods, items, planet, scope);
+                            fillHousePeriods(housePeriods, items, planet, scope);
                             var myElement = document.querySelector('#' + planet + '-viz .planet-timeline');
                             var localFrise = new vis.Timeline(myElement);
                             localFrise.setOptions(options);
@@ -99,8 +148,8 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
                             scope.items = items;
                         } else {
                             // Si la frise existe déjà on met juste à jour avec des nouveaux éléments
-                            fillPlanetPeriods(planetPeriods, scope.items, planet);
-                            fillHousePeriods(housePeriods, scope.items, planet);
+                            fillPlanetPeriods(planetPeriods, scope.items, planet, scope);
+                            fillHousePeriods(housePeriods, scope.items, planet, scope);
                         }
                     }
                 });
