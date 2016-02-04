@@ -33,55 +33,15 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
 
     var fillPlanetPeriods = function (periods, items, planet, scope) {
         var $parent = scope.$parent;
-        var lastQueriedEndDate = $parent.lastQueriedEndDate;
-        var lastQueriedStartDate = $parent.lastQueriedStartDate;
-
-        var visibleEndDate = $parent.visibleEndDate;
-        var visibleStartDate = $parent.visibleStartDate;
-
-        var future = new Date($parent.lastQueriedStartDate) > new Date($parent.visibleStartDate);
 
         angular.forEach(periods, function (value, index) {
             var aspectObject = aspectGroups[value.aspect];
-            // TODO : data.get(1), data.update(item)
+
             var existingPrefix = planet + '-' + value.aspect + '-' + value.natalPlanet + '-';
-            var existing = null;
-            var startDate = value.startDate;
-            var endDate = value.endDate;
 
-            if (value.endDate == lastQueriedEndDate && !future) {
-                // Cas où on scroll vers le passé, on cherche les "first"
-                existing = items.get(existingPrefix + 'first');
-                if (existing) {
-                    endDate = existing.end;
-                }
-            } else if (value.startDate == lastQueriedStartDate && future) {
-                // Cas où on scroll vers le futur, on cherche les "last"
-                existing = items.get(existingPrefix + 'last');
-                if (existing) {
-                    startDate = existing.start;
-                }
-            }
+            var id = getExisting(value, existingPrefix, $parent, items);
 
-            if (existing) {
-                var lastId = existing.id;
-                items.remove(lastId);
-                existing.id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-' + value.startDate;
-                existing.start = startDate;
-                existing.end = endDate;
-                items.update(existing);
-            } else {
-                var id;
-                if (value.startDate == visibleStartDate) {
-                    id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-first';
-                } else {
-                    if (value.endDate == visibleEndDate) {
-                        id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-last';
-                    } else {
-                        id = planet + '-' + value.aspect + '-' + value.natalPlanet + '-' + value.startDate;
-                    }
-                }
-
+            if (id) {
                 var el = {
                     id: id,
                     content: value.natalPlanet,
@@ -96,17 +56,76 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
         });
     };
 
+    function getExisting(value, existingPrefix, $parent, items) {
+        var lastQueriedEndDate = $parent.lastQueriedEndDate;
+        var lastQueriedStartDate = $parent.lastQueriedStartDate;
+
+        var visibleEndDate = $parent.visibleEndDate;
+        var visibleStartDate = $parent.visibleStartDate;
+
+        var startDate = value.startDate;
+        var endDate = value.endDate;
+
+        var future = new Date($parent.lastQueriedStartDate) > new Date($parent.visibleStartDate);
+
+        var existing;
+
+        if (value.endDate == lastQueriedEndDate && !future) {
+            // Cas où on scroll vers le passé, on cherche les "first"
+            existing = items.get(existingPrefix + 'first');
+            if (existing) {
+                endDate = existing.end;
+            }
+        } else if (value.startDate == lastQueriedStartDate && future) {
+            // Cas où on scroll vers le futur, on cherche les "last"
+            existing = items.get(existingPrefix + 'last');
+            if (existing) {
+                startDate = existing.start;
+            }
+        }
+
+        var id = null;
+
+        if (existing) {
+            var lastId = existing.id;
+            items.remove(lastId);
+            existing.id = existingPrefix + startDate;
+            existing.start = startDate;
+            existing.end = endDate;
+            items.update(existing);
+        } else {
+            if (value.startDate == visibleStartDate) {
+                id = existingPrefix + 'first';
+            } else {
+                if (value.endDate == visibleEndDate) {
+                    id = existingPrefix + 'last';
+                } else {
+                    id = existingPrefix + value.startDate;
+                }
+            }
+        }
+        return id;
+    }
+
     var fillHousePeriods = function (periods, items, planet, scope) {
+        var $parent = scope.$parent;
+
         angular.forEach(periods, function (value, index) {
-            var el = {
-                id: planet + '-' + value.natalHouse + '-' + index + '-' + value.startDate,
-                content: value.natalHouse,
-                start: value.startDate,
-                end: value.endDate,
-                type: 'background',
-                className: value.natalHouse
-            };
-            items.add(el);
+            var existingPrefix = planet + '-' + value.natalHouse + '-';
+
+            var id = getExisting(value, existingPrefix, $parent, items);
+
+            if (id) {
+                var el = {
+                    id: id,
+                    content: value.natalHouse,
+                    start: value.startDate,
+                    end: value.endDate,
+                    type: 'background',
+                    className: value.natalHouse
+                };
+                items.add(el);
+            }
         });
     };
 
