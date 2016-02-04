@@ -1,27 +1,18 @@
 {
   "name": "theastrologist-front",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "dependencies": {
-    "jquery": "2.1.4",
-    "angular": "1.4.7",
-    "angular-route": "1.4.7",
-    "angular-animate": "1.4.7",
-    "angular-cookies": "1.4.7",
-    "angular-translate": "2.8.1",
-    "angular-translate-loader-static-files": "2.8.1",
-    "angular-ui-utils": "3.0.0",
-    "angular-bootstrap": "0.14.1",
-    "restangular": "1.5.1",
-    "jquery-ui": "1.11.4",
-    "bootstrap": "3.3.5",
-    "vis": "~4.9.0"
+    "angular": "1.4.9",
+    "angular-route": "1.4.9",
+    "vis": "~4.9.0",
+    "angular-material": "~1.0.4",
+    "mdPickers": "~0.5.0"
   },
   "devDependencies": {
-    "angular-mocks": "1.4.7"
+    "angular-mocks": "1.4.9",
+    "jasmine-promise-matchers": "~1.1.2"
   },
   "resolutions": {
-    "angular": "1.4.7",
-    "angular-translate": "~2.8.1",
-    "jquery": "2.1.4"
+    "angular": "1.4.9"
   }
 }

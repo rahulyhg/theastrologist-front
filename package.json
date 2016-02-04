@@ -1,6 +1,6 @@
 {
   "name": "theastrologist-front",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Front side of TheAstrologist application",
   "author": {
     "name": "Samy Amirou",
@@ -19,9 +19,9 @@
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "gulp": "^3.9.0",
-    "karma": "~0.10",
-    "karma-jasmine": "~0.1",
-    "karma-junit-reporter": "~0.1",
+    "karma": "~0.13",
+    "karma-jasmine": "~0.3",
+    "karma-junit-reporter": "~0.3",
     "karma-ng-scenario": "~0.1",
     "phantomjs": "~1.9"
   },
@@ -29,6 +29,7 @@
   "private": true,
   "main": "scripts/server.js",
   "scripts": {
-    "start": "node scripts/server.js"
+    "start": "node scripts/server.js",
+    "postinstall": "HOME=$OPENSHIFT_REPO_DIR bower install || bower install"
   }
 }

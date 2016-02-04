@@ -2,14 +2,15 @@
  * Created by Samy on 24/10/2015.
  */
 angular.module('theastrologist.services')
-    .factory('transitPeriodService', ['$http', '$log', '$q', function ($http, $log, $q) {
-        //var urlPrefix = 'http://localhost:9090/theastrologist/rest';
-        var urlPrefix = 'https://rest-theastrologist.rhcloud.com/rest';
+    .factory('transitPeriodService', [
+        '$http', '$log', '$q', 'cacheService',
+        function ($http, $log, $q, cacheService) {
+        //var urlPrefix = 'http://localhost:9090/theastrologist/rest/transitperiod';
+        var urlPrefix = 'https://rest-theastrologist.rhcloud.com/rest/transitperiod';
 
-        var constructUrl = function (natalDate, startDate, endDate, latitude, longitude) {
+        var constructUri = function (natalDate, startDate, endDate, latitude, longitude) {
 
-            return urlPrefix + '/transitperiod/' +
-                natalDate + '/' +
+            return natalDate + '/' +
                 startDate + '/' +
                 endDate + '/' +
                 latitude + '/' +
@@ -18,16 +19,29 @@ angular.module('theastrologist.services')
 
         return function (natalDate, startDate, endDate, latitude, longitude) {
             var deferred = $q.defer();
-            $http({
-                method: 'GET',
-                url: constructUrl(natalDate, startDate, endDate, latitude, longitude),
-                crossDomain: true
-            }).success(function (data) {
-                deferred.resolve(data);
-            }).error(function (msg, code) {
-                deferred.reject(msg);
-                $log.error(msg, code);
-            });
-            return deferred.promise;
+            if (natalDate && startDate && endDate && latitude && longitude) {
+                var uri = constructUri(natalDate, startDate, endDate, latitude, longitude);
+                return cacheService.getData(
+                    uri,
+                    function () {
+                        var def = $q.defer();
+                        $http({
+                            method: 'GET',
+                            url: urlPrefix + '/' + uri,
+                            crossDomain: true
+                        }).success(function (data) {
+                            def.resolve(data);
+                        }).error(function (msg, code) {
+                            def.reject(msg);
+                            $log.error(msg, code);
+                        });
+                        return def.promise;
+                    }
+                );
+            } else {
+                deferred.reject("Error with arguments - natalDate: " + natalDate + ", startDate: " + startDate +
+                    "endDate: " + ", endDate: " + endDate + ", latitude: " + latitude + ", longitude: " + longitude);
+                return deferred.promise;
+            }
         };
     }]);
