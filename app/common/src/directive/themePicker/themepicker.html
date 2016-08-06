@@ -6,11 +6,11 @@
           ng-submit="myForm.$valid && ctrl.updateFrise(date, time)">
         <md-input-container>
             <label for="input_date">Date</label>
-            <input id="input_date" type="date" mdp-date-picker ng-model="date" required />
+            <input time="false" date="true" mdc-datetime-picker type="text" id="input_date" ng-model="date" class=" md-input" required/>
         </md-input-container>
         <md-input-container class="time_input">
             <label for="input_hours">Heures</label>
-            <input required id="input_hours" ng-model="time" ng-click="ctrl.showTimePicker($event)"/>
+            <input mdc-datetime-picker date="false" time="true" type="text" id="input_hours" format="HH:mm" ng-model="time" class=" md-input" required/>
         </md-input-container>
         <md-autocomplete
                 md-no-cache="true"

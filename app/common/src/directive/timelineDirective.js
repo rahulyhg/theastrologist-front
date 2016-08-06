@@ -3,19 +3,20 @@
 /* Directives */
 
 angular.module('theastrologist.directives').directive('timeline', [function () {
-    const options = {
+    var OPTIONS = {
         orientation: {axis: 'top', item: 'top'},
-        zoomMin: 1000 * 60 * 60 * 24 * 31,         // one day in milliseconds
-        zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 4 // 2 ans
+        zoomMin: 1000 * 60 * 60 * 24 * 31 * 6,         // Un mois en millisecondes
+        zoomMax: 1000 * 60 * 60 * 24 * 31 * 12 * 4, // 2 ans
+        throttleRedraw: 50
     };
 
-    const groups = new vis.DataSet([
+    var GROUPS = new vis.DataSet([
         {"content": "Conjonctions", "id": "conj", "value": 1, className: 'aspect-group-conj'},
         {"content": "Opp. / Trigones", "id": "princ", "value": 2, className: 'aspect-group-princ'},
         {"content": "Carrés / Sextiles", "id": "second", "value": 3, className: 'aspect-group-second'}
     ]);
 
-    const aspectGroups = {
+    var ASPECT_GROUPS = {
         CONJONCTION: {groupId: 'conj', groupItemClass: 'item-conjonction'},
         OPPOSITION: {groupId: 'princ', groupItemClass: 'item-negatif'},
         TRIGONE: {groupId: 'princ', groupItemClass: 'item-positif'},
@@ -23,7 +24,7 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
         SEXTILE: {groupId: 'second', groupItemClass: 'item-positif'}
     };
 
-    const aspectOrders = {
+    var ASPECT_ORDERS = {
         CONJONCTION: 0,
         OPPOSITION: 1,
         TRIGONE: 1,
@@ -35,7 +36,7 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
         var $parent = scope.$parent;
 
         angular.forEach(periods, function (value, index) {
-            var aspectObject = aspectGroups[value.aspect];
+            var aspectObject = ASPECT_GROUPS[value.aspect];
 
             var existingPrefix = planet + '-' + value.aspect + '-' + value.natalPlanet + '-';
 
@@ -48,7 +49,7 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
                     start: value.startDate,
                     end: value.endDate,
                     group: aspectObject.groupId,
-                    order: aspectOrders[value.aspect],
+                    order: ASPECT_ORDERS[value.aspect],
                     className: aspectObject.groupItemClass
                 };
                 items.add(el);
@@ -142,37 +143,43 @@ angular.module('theastrologist.directives').directive('timeline', [function () {
         '       <div class="planet-timeline"></div>' +
         '   </md-card-content>' +
         '</md-card>',
-        compile: function (element, attribut) {
-            return function (scope, elm, attr) {
-                scope.$watchGroup(['planet', 'data'], function (newValues, oldValues, scope) {
-                    var planet = newValues[0];
-                    var data = newValues[1];
-                    if (planet && data) {
-                        var planetPeriods = data.planetPeriods[planet];
-                        var housePeriods = data.housePeriods[planet];
+        link: function (scope, elm, attr) {
+            scope.element = elm;
+            scope.$watchGroup(['planet', 'data'], function (newValues, oldValues, scope) {
+                var planet = newValues[0];
+                var data = newValues[1];
+                if (planet && data) {
+                    var planetPeriods = data.planetPeriods[planet];
+                    var housePeriods = data.housePeriods[planet];
 
-                        if (!scope.localFrise) {
-                            var items = new vis.DataSet();
-                            fillPlanetPeriods(planetPeriods, items, planet, scope);
-                            fillHousePeriods(housePeriods, items, planet, scope);
-                            var myElement = document.querySelector('#' + planet + '-viz .planet-timeline');
+                    if (!scope.localFrise) {
+                        var items = new vis.DataSet();
+                        fillPlanetPeriods(planetPeriods, items, planet, scope);
+                        fillHousePeriods(housePeriods, items, planet, scope);
+                        //var myElement = document.querySelector('#' + planet + '-viz .planet-timeline');
+                        //var myElement = document.querySelector('.planet-timeline');
+                        var myElement = scope.element.find('div')[0];
+                        if (myElement) {
                             var localFrise = new vis.Timeline(myElement);
-                            localFrise.setOptions(options);
-                            localFrise.setGroups(groups);
+                            localFrise.setOptions(OPTIONS);
+                            localFrise.setGroups(GROUPS);
                             localFrise.setItems(items);
-                            scope.$parent.registerTimeline(planet, localFrise);
-                            var window = localFrise.getWindow();
-                            scope.$parent.onRangeChange(localFrise, window.start, window.end);
-                            scope.localFrise = localFrise;
-                            scope.items = items;
-                        } else {
-                            // Si la frise existe déjà on met juste à jour avec des nouveaux éléments
-                            fillPlanetPeriods(planetPeriods, scope.items, planet, scope);
-                            fillHousePeriods(housePeriods, scope.items, planet, scope);
+                            var $parent = scope.$parent;
+                            if($parent.registerTimeline) {
+                                $parent.registerTimeline(planet, localFrise);
+                                var window = localFrise.getWindow();
+                                $parent.onRangeChange(localFrise, window.start, window.end);
+                                scope.localFrise = localFrise;
+                                scope.items = items;
+                            }
                         }
+                    } else {
+                        // Si la frise existe déjà on met juste à jour avec des nouveaux éléments
+                        fillPlanetPeriods(planetPeriods, scope.items, planet, scope);
+                        fillHousePeriods(housePeriods, scope.items, planet, scope);
                     }
-                });
-            };
+                }
+            });
         }
     };
 }]);

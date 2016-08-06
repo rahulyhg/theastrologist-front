@@ -9,15 +9,8 @@
 angular.module('theastrologist.directives')
     .controller('themePickerController', [
         '$scope', '$location', '$filter', '$q', 'geolocService',
-        '$mdpDatePicker', '$mdpTimePicker',
-        function ($scope, $location, $filter, $q, geolocService, $mdpDatePicker, $mdpTimePicker) {
+        function ($scope, $location, $filter, $q, geolocService) {
             var that = this;
-
-            this.showTimePicker = function (ev) {
-                $mdpTimePicker(ev, $scope.currentDate).then(function (selectedTime) {
-                    $scope.time = $filter('isoTime')(selectedTime);
-                });
-            };
 
             this.updateFrise = function (natalDate, time) {
                 $scope.showme = false;
@@ -25,10 +18,15 @@ angular.module('theastrologist.directives')
                 var currentYear = currentDate.getFullYear();
                 var minDate = new Date(currentYear - 3, currentDate.getMonth(), currentDate.getDay());
                 var maxDate = new Date(currentYear + 3, currentDate.getMonth(), currentDate.getDay());
+
+                var filteredNatalDate = $filter('isoDateTime')(natalDate, time);
+                var filteredMinDate = $filter('isoDate')(minDate);
+                var filteredMaxDate = $filter('isoDate')(maxDate);
+
                 var path = '/timeline/'
-                    + $filter('isoDateTime')(natalDate, time) + '/'
-                    + $filter('isoDate')(minDate) + '/'
-                    + $filter('isoDate')(maxDate) + '/'
+                    + filteredNatalDate + '/'
+                    + filteredMinDate + '/'
+                    + filteredMaxDate + '/'
                     + that.selectedItem.latitude + '/'
                     + that.selectedItem.longitude;
                 $location.path(path);
@@ -38,16 +36,19 @@ angular.module('theastrologist.directives')
                 var deferred = $q.defer();
                 if (searchText) {
                     geolocService(searchText).then(
-                        function (data) {
+                        function (response) {
                             var results = [];
                             var rep;
-                            for (var i = 0; rep = data.results[i]; i++) {
-                                var result = {
-                                    display: rep.formatted_address,
-                                    latitude: rep.geometry.location.lat,
-                                    longitude: rep.geometry.location.lng
-                                };
-                                results.push(result)
+                            var data = response.data;
+                            if(data) {
+                                for (var i = 0; rep = data.results[i]; i++) {
+                                    var result = {
+                                        display: rep.formatted_address,
+                                        latitude: rep.geometry.location.lat,
+                                        longitude: rep.geometry.location.lng
+                                    };
+                                    results.push(result)
+                                }
                             }
                             deferred.resolve(results);
                         }

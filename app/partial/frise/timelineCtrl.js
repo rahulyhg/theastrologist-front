@@ -5,6 +5,8 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
     '$scope', '$routeParams', 'transitPeriodService', '$filter',
     function ($scope, $routeParams, transitPeriodService, $filter) {
 
+        $scope.$parent.showme = false;
+
         var that = this;
         $scope.planetList = [
             'NOEUD_NORD_MOYEN',

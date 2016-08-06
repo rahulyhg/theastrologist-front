@@ -24,5 +24,5 @@ angular.module('theastrologist', [
 
 angular.module('theastrologist.filters', []);
 angular.module('theastrologist.services', []);
-angular.module('theastrologist.directives', ['mdPickers']);
+angular.module('theastrologist.directives', ['ngMaterialDatePicker']);
 angular.module('theastrologist.controllers', []);

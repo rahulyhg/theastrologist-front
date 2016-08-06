@@ -2,11 +2,14 @@
 // Generated on Fri Oct 23 2015 19:58:04 GMT+0200 (Paris, Madrid (heure d’été))
 
 module.exports = function (config) {
+
     config.set({
 
         // base path, that will be used to resolve files and exclude
         basePath: '..',
 
+
+        plugins : ['karma-jasmine', 'karma-phantomjs-launcher'],
 
         // frameworks to use
         frameworks: ['jasmine'],
@@ -16,9 +19,13 @@ module.exports = function (config) {
         files: [
             'app/bower_components/angular/angular.js',
             'app/bower_components/angular-route/angular-route.js',
+            'app/bower_components/angular-animate/angular-animate.js',
+            'app/bower_components/angular-aria/angular-aria.js',
+            'app/bower_components/angular-material/angular-material.js',
             'app/bower_components/angular-mocks/angular-mocks.js',
             'app/bower_components/jasmine-promise-matchers/dist/jasmine-promise-matchers.js',
             'app/bower_components/vis/dist/vis.js',
+            'app/bower_components/angular-material-datetimepicker/js/angular-material-datetimepicker.js',
             'app/common/src/**/*.js',
             'app/partial/**/*.js',
             'test/**/*-spec.js'
@@ -31,7 +38,7 @@ module.exports = function (config) {
 
         // test results reporter to use
         // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-        reporters: ['progress', 'coverage'],
+        reporters: ['progress'],
 
 
         // web server port
@@ -59,7 +66,7 @@ module.exports = function (config) {
         // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
         // - PhantomJS
         // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
 
 
         // If browser does not capture in given timeout [ms], kill it

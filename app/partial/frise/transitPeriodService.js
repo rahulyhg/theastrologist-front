@@ -29,9 +29,9 @@ angular.module('theastrologist.services')
                             method: 'GET',
                             url: urlPrefix + '/' + uri,
                             crossDomain: true
-                        }).success(function (data) {
-                            def.resolve(data);
-                        }).error(function (msg, code) {
+                        }).then(function (response) {
+                            def.resolve(response.data);
+                        }, function (msg, code) {
                             def.reject(msg);
                             $log.error(msg, code);
                         });
