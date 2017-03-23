@@ -3,32 +3,36 @@
     <form name="myForm"
           layout="row"
           class="md-inline-form"
-          ng-submit="myForm.$valid && ctrl.updateFrise(date, time)">
-        <md-input-container>
-            <label for="input_date">Date</label>
-            <input time="false" date="true" mdc-datetime-picker type="text" id="input_date" ng-model="date" class=" md-input" required/>
-        </md-input-container>
-        <md-input-container class="time_input">
-            <label for="input_hours">Heures</label>
-            <input mdc-datetime-picker date="false" time="true" type="text" id="input_hours" format="HH:mm" ng-model="time" class=" md-input" required/>
-        </md-input-container>
-        <md-autocomplete
-                md-no-cache="true"
-                md-selected-item="ctrl.selectedItem"
-                md-search-text-change="ctrl.search(ctrl.searchText)"
-                md-search-text="ctrl.searchText"
-                md-items="item in ctrl.search(ctrl.searchText)"
-                md-item-text="item.display"
-                md-min-length="2"
-                md-floating-label="Lieu de naissance"
-                required >
-            <md-item-template>
-                <span md-highlight-text="ctrl.searchText" md-highlight-flags="^i">{{item.display}}</span>
-            </md-item-template>
-            <md-not-found>
-                "{{ctrl.searchText}}" introuvable
-            </md-not-found>
-        </md-autocomplete>
+          ng-submit="myForm.$valid && ctrl.updateFrise(date)">
+        <sm-date-time-picker
+                label="Date/heure de naissance"
+                ng-model="date"
+                mode="date-time"
+                is-required="true"
+                format="YYYY-MM-DD HH:mm">
+        </sm-date-time-picker>
+
+        <div>
+            <md-input-container md-no-float>
+                <md-autocomplete
+                        md-no-cache="true"
+                        md-selected-item="ctrl.selectedItem"
+                        md-search-text-change="ctrl.search(ctrl.searchText)"
+                        md-search-text="ctrl.searchText"
+                        md-items="item in ctrl.search(ctrl.searchText)"
+                        md-item-text="item.display"
+                        md-min-length="2"
+                        md-floating-label="Lieu de naissance"
+                        required>
+                    <md-item-template>
+                        <span md-highlight-text="ctrl.search" md-highlight-flags="^i">{{item.display}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        "{{ctrl.searchText}}" introuvable
+                    </md-not-found>
+                </md-autocomplete>
+            </md-input-container>
+        </div>
         <md-button type="submit" class="md-icon-button" aria-label="Update Timeline" id="update_theme">
             <md-icon class="material-icons">done</md-icon>
         </md-button>

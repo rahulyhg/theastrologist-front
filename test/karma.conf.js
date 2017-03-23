@@ -21,11 +21,12 @@ module.exports = function (config) {
             'app/bower_components/angular-route/angular-route.js',
             'app/bower_components/angular-animate/angular-animate.js',
             'app/bower_components/angular-aria/angular-aria.js',
+            'app/bower_components/moment/moment.js',
             'app/bower_components/angular-material/angular-material.js',
             'app/bower_components/angular-mocks/angular-mocks.js',
             'app/bower_components/jasmine-promise-matchers/dist/jasmine-promise-matchers.js',
             'app/bower_components/vis/dist/vis.js',
-            'app/bower_components/angular-material-datetimepicker/js/angular-material-datetimepicker.js',
+            'app/bower_components/smDateTimeRangePicker/src/picker.js',
             'app/common/src/**/*.js',
             'app/partial/**/*.js',
             'test/**/*-spec.js'

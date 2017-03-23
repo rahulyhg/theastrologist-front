@@ -3,11 +3,10 @@
  */
 describe('Timeline directive...', function () {
     'use strict';
-    var mockService, $scope, $httpBackend, $compile;
+    var mockService, $scope, $compile;
     beforeEach(module('theastrologist.services'));
     beforeEach(module('theastrologist.directives'));
     beforeEach(function () {
-        installPromiseMatchers();
 
         inject(function (transitPeriodService, _$compile_, _$rootScope_) {
             mockService = transitPeriodService;
@@ -86,12 +85,11 @@ describe('Timeline directive...', function () {
     it('... deja le truc de base', function () {
 
         var element = $compile("<timeline planet='jojo' data='data'/>")($scope);
-        // fire all the watches, so the scope expression {{1 + 1}} will be evaluated
         $scope.$digest();
-        // Check that the compiled element contains the templated content
         var actual = element.html();
         expect(actual).toContain('<div class="vis-timeline');
+        // BROKEN !!
         // TODO : à refaire fonctionner, mais à tester en live d'abord
-        // expect(actual).toContain('CARRE MERCURE');
+        //expect(actual).toContain('CARRE MERCURE');
     });
 });

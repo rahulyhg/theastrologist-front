@@ -12,14 +12,16 @@ angular.module('theastrologist.directives')
         function ($scope, $location, $filter, $q, geolocService) {
             var that = this;
 
-            this.updateFrise = function (natalDate, time) {
+            this.updateFrise = function (natalDate) {
                 $scope.showme = false;
                 var currentDate = new Date();
                 var currentYear = currentDate.getFullYear();
                 var minDate = new Date(currentYear - 3, currentDate.getMonth(), currentDate.getDay());
                 var maxDate = new Date(currentYear + 3, currentDate.getMonth(), currentDate.getDay());
 
-                var filteredNatalDate = $filter('isoDateTime')(natalDate, time);
+                //var filteredNatalDate = $filter('isoDateTime')(natalDate, time);
+                // Passer de "2017-03-28 13:14" à "2017-03-28T13:14"
+                var filteredNatalDate = natalDate.split(' ').join('T');
                 var filteredMinDate = $filter('isoDate')(minDate);
                 var filteredMaxDate = $filter('isoDate')(maxDate);
 
