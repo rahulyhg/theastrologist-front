@@ -104,7 +104,7 @@ StaticServlet.prototype.handleRequest = function (req, res) {
     }
 
     self.findAndSendTarget(req, path, res, self);
-}
+};
 
 StaticServlet.prototype.findAndSendTarget = function (req, path, res, self) {
     fs.stat(path, function (err, stat) {
@@ -132,7 +132,7 @@ StaticServlet.prototype.findAndSendTarget = function (req, path, res, self) {
         }
         return self.sendFile_(req, res, path);
     });
-}
+};
 
 StaticServlet.prototype.attemptingToAccessOutsideLocalAppPath = function (pathParts) {
     if (pathParts[0] !== '.')
@@ -211,7 +211,7 @@ StaticServlet.prototype.sendRedirect_ = function (req, res, redirectUrl) {
 
 StaticServlet.prototype.sendDefault_ = function (req, res) {
     var self = this;
-    var path = 'app/index.html'
+    var path = 'app/index.html';
 
     var file = fs.createReadStream(path);
     res.writeHead(200, {
@@ -253,7 +253,7 @@ StaticServlet.prototype.sendFile_ = function (req, res, path) {
 
 StaticServlet.prototype.sendAllJsonFilesAppended_ = function (req, res, path) {
     var self = this;
-    var files = []
+    var files = [];
     try {
         files = fs.readdirSync(path);
     }
@@ -317,7 +317,7 @@ StaticServlet.prototype.writeSuccessHeader = function (res, path) {
         'Content-Type': StaticServlet.
             MimeMap[path.split('.').pop()] || 'text/plain'
     });
-}
+};
 StaticServlet.prototype.sendDirectory_ = function (req, res, path) {
     var self = this;
     if (path.match(/[^\/]$/)) {
@@ -385,7 +385,7 @@ fs.fileExistsSync = function (filePath) {
     catch (e) {
         return false;
     }
-}
+};
 
 fs.mkdirSyncRecursive = function (dirPath) {
 

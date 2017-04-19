@@ -4,9 +4,8 @@
 
 angular.module('theastrologist.services')
     .factory('geolocService', ['$http', '$log', '$q', 'cacheService', function ($http, $log, $q, cacheService) {
-        //var urlPrefix = 'http://localhost:9090/theastrologist/rest';
-        const urlPrefix = 'https://maps.googleapis.com/maps/api/geocode/json';
-        const API_KEY = 'AIzaSyC0K_Vy082RPyf4huiNSj1I84k-xPxszM8';
+        var URL_PREFIX = 'https://maps.googleapis.com/maps/api/geocode/json';
+        var API_KEY = 'AIzaSyC0K_Vy082RPyf4huiNSj1I84k-xPxszM8';
 
         var constructUri = function (searchText) {
             return '?address=' + searchText + '&key=' + API_KEY;
@@ -22,11 +21,11 @@ angular.module('theastrologist.services')
                         var def = $q.defer();
                         $http({
                             method: 'GET',
-                            url: urlPrefix + uri,
+                            url: URL_PREFIX + uri,
                             crossDomain: true
-                        }).success(function (data) {
+                        }).then(function (data) {
                             def.resolve(data);
-                        }).error(function (msg, code) {
+                        }, function (msg, code) {
                             def.reject(msg);
                             $log.error(msg, code);
                         });
