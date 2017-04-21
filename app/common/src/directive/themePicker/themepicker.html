@@ -1,0 +1,41 @@
+<div class="theme_picker" layout="column" ng-controller="themePickerController as ctrl">
+    <md-subheader>Choisissez vos coordonnées natales</md-subheader>
+    <form name="myForm"
+          layout="row"
+          class="md-inline-form"
+          ng-submit="myForm.$valid && ctrl.updateFrise(date)">
+        <sm-date-time-picker
+                label="Date/heure de naissance"
+                ng-model="date"
+                mode="date-time"
+                is-required="true"
+                format="YYYY-MM-DD HH:mm">
+        </sm-date-time-picker>
+
+        <div>
+            <md-input-container md-no-float>
+                <md-autocomplete
+                        md-no-cache="true"
+                        md-selected-item="ctrl.selectedItem"
+                        md-search-text-change="ctrl.search(ctrl.searchText)"
+                        md-search-text="ctrl.searchText"
+                        md-items="item in ctrl.search(ctrl.searchText)"
+                        md-item-text="item.display"
+                        md-min-length="2"
+                        md-floating-label="Lieu de naissance"
+                        required>
+                    <md-item-template>
+                        <span md-highlight-text="ctrl.search" md-highlight-flags="^i">{{item.display}}</span>
+                    </md-item-template>
+                    <md-not-found>
+                        "{{ctrl.searchText}}" introuvable
+                    </md-not-found>
+                </md-autocomplete>
+            </md-input-container>
+        </div>
+        <md-button type="submit" class="md-icon-button" aria-label="Update Timeline" id="update_theme">
+            <md-icon class="material-icons">done</md-icon>
+        </md-button>
+    </form>
+
+</div>

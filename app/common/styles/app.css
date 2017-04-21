@@ -1,0 +1,115 @@
+/* TOOLBAR */
+md-toolbar.ta-toolbar {
+    z-index: 10;
+}
+
+.md-toolbar-tools {
+    box-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
+}
+
+.view {
+    overflow: hidden;
+}
+
+/* THEME PICKER */
+.theme_picker {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.54);
+    background-color: rgb(255, 255, 255);
+    width: 100%;
+    z-index: 2;
+    box-shadow: 0 0 1px rgba(0, 0, 0, .14), 0 1px 1px rgba(0, 0, 0, .28);
+    transition: all 0.5s ease 0s, visibility 0s linear 0.5s;
+    top: 0;
+    transform: translateY(60px);
+}
+
+.theme_picker.ng-hide {
+    transition: all 0.5s ease 0s, visibility 0s linear 0.5s;
+    transform: translateY(-100%);
+    z-index: 0;
+}
+
+.theme_picker .md-inline-form > * {
+    margin: 20px 15px 0 15px;
+}
+
+.theme_picker form.md-inline-form {
+    flex-wrap: wrap;
+}
+
+/* Date picker */
+.theme_picker md-datepicker {
+    background-color: inherit;
+    min-width: 120px;
+}
+
+/* Autocomplete */
+.theme_picker md-autocomplete[md-floating-label] md-input-container {
+    margin: 0;
+    padding-bottom: 0;
+}
+
+/* Bouton de la fin */
+.theme_picker .md-button[type='submit'] {
+    margin: 25px 0;
+}
+
+
+
+/* FRISE */
+md-content.frise {
+    background-color: #eee;
+}
+
+.aspect-group-conj .vis-item.vis-range,
+.aspect-group-second .vis-item.vis-range,
+.aspect-group-princ .vis-item.vis-range {
+    border: none;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+.vis-item.item-conjonction {
+    background-color: #d3f3dd;
+    color: darkgreen;
+}
+
+.aspect-group-princ .vis-item.item-negatif {
+    background-color: #f98383;
+    color: #9a0707;
+}
+
+.aspect-group-second .vis-item.item-negatif {
+    background-color: 	#ffcccc;
+    color: #ee3f3f;
+}
+
+.aspect-group-princ .vis-item.item-positif {
+    background-color: 	#a6cbe7;
+    color: #175888;
+}
+
+.aspect-group-second .vis-item.item-positif {
+    background-color: #d2e5f3;
+    color: 	#227ec3;
+}
+
+/*Feu*/
+.vis-item.vis-background.I, .vis-item.vis-background.V, .vis-item.vis-background.IX {
+    background-color: #FFFCB4;
+}
+
+/*Terre*/
+.vis-item.vis-background.II, .vis-item.vis-background.VI, .vis-item.vis-background.X {
+    background-color: #E8DDCB;
+}
+
+/*Air*/
+.vis-item.vis-background.III, .vis-item.vis-background.VII, .vis-item.vis-background.XI {
+    background-color: #F6FFFB;
+}
+
+/*Eau*/
+.vis-item.vis-background.IV, .vis-item.vis-background.VIII, .vis-item.vis-background.XII {
+    background-color: #EEF9FB;
+}
