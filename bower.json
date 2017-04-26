@@ -5,7 +5,7 @@
     "angular": "^1.6.3",
     "angular-route": "^1.6.3",
     "vis": "^4.19.1",
-    "angular-material": "^1.1.3",
+    "angular-material": "^1.1.4",
     "smDateTimeRangePicker": "^2.0.10"
   },
   "devDependencies": {

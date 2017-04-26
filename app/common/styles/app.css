@@ -44,10 +44,9 @@ md-toolbar.ta-toolbar {
     min-width: 120px;
 }
 
-/* Autocomplete */
-.theme_picker md-autocomplete[md-floating-label] md-input-container {
-    margin: 0;
-    padding-bottom: 0;
+/* Autocomplete*/
+.theme_picker md-input-container.flex {
+    margin: 5px 10px;
 }
 
 /* Bouton de la fin */
