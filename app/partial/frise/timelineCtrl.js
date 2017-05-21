@@ -28,9 +28,8 @@ angular.module('theastrologist.controllers', []).controller('timelineCtrl', [
         this.queryDataAndUpdateFrise = function (start, end) {
             that.promise = transitPeriodService(
                 $routeParams.natalDate,
-                start, end,
-                $routeParams.latitude,
-                $routeParams.longitude
+                $routeParams.latitude, $routeParams.longitude,
+                start, end
             );
             that.promise.then(function (data) {
                 $scope.lastQueriedStartDate = start;
