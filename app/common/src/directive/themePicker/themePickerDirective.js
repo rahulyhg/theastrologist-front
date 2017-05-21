@@ -27,10 +27,10 @@ angular.module('theastrologist.directives')
 
                 var path = '/timeline/'
                     + filteredNatalDate + '/'
-                    + filteredMinDate + '/'
-                    + filteredMaxDate + '/'
                     + that.selectedItem.latitude + '/'
-                    + that.selectedItem.longitude;
+                    + that.selectedItem.longitude + '/'
+                    + filteredMinDate + '/'
+                    + filteredMaxDate;
                 $location.path(path);
             };
 

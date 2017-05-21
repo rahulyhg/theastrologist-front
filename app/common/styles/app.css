@@ -24,6 +24,11 @@ md-toolbar.ta-toolbar {
     transform: translateY(60px);
 }
 
+.theme_picker input:not(:focus) {
+    /* Correction inputs invisibles */
+    color: rgba(0, 0, 0, 0.54) !important;
+}
+
 .theme_picker.ng-hide {
     transition: all 0.5s ease 0s, visibility 0s linear 0.5s;
     transform: translateY(-100%);
@@ -44,10 +49,9 @@ md-toolbar.ta-toolbar {
     min-width: 120px;
 }
 
-/* Autocomplete */
-.theme_picker md-autocomplete[md-floating-label] md-input-container {
-    margin: 0;
-    padding-bottom: 0;
+/* Autocomplete*/
+.theme_picker md-input-container.flex {
+    margin: 5px 10px;
 }
 
 /* Bouton de la fin */

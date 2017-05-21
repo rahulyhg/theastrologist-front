@@ -4,16 +4,18 @@
           layout="row"
           class="md-inline-form"
           ng-submit="myForm.$valid && ctrl.updateFrise(date)">
-        <sm-date-time-picker
-                label="Date/heure de naissance"
-                ng-model="date"
-                mode="date-time"
-                is-required="true"
-                format="YYYY-MM-DD HH:mm">
-        </sm-date-time-picker>
+        <div layout-gt-sm="row">
 
-        <div>
-            <md-input-container md-no-float>
+            <md-input-container flex>
+                <sm-date-time-picker
+                        label="Date/heure de naissance"
+                        ng-model="date"
+                        mode="date-time"
+                        is-required="true"
+                        format="YYYY-MM-DD HH:mm">
+                </sm-date-time-picker>
+            </md-input-container>
+            <md-input-container flex>
                 <md-autocomplete
                         md-no-cache="true"
                         md-selected-item="ctrl.selectedItem"
@@ -32,10 +34,10 @@
                     </md-not-found>
                 </md-autocomplete>
             </md-input-container>
+            <md-button type="submit" class="md-icon-button" aria-label="Update Timeline" id="update_theme">
+                <md-icon class="material-icons">done</md-icon>
+            </md-button>
         </div>
-        <md-button type="submit" class="md-icon-button" aria-label="Update Timeline" id="update_theme">
-            <md-icon class="material-icons">done</md-icon>
-        </md-button>
     </form>
 
 </div>

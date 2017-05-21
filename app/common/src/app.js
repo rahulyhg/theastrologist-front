@@ -12,7 +12,7 @@ angular.module('theastrologist', [
     'theastrologist.directives',
     'theastrologist.controllers'
 ]).config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/timeline/:natalDate/:startDate/:endDate/:latitude/:longitude', {
+    $routeProvider.when('/timeline/:natalDate/:latitude/:longitude/:startDate/:endDate', {
         templateUrl: '../../partial/frise/timeline.html',
         controller: 'timelineCtrl'
     });
