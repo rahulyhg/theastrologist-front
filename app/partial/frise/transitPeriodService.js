@@ -5,7 +5,7 @@ angular.module('theastrologist.services')
     .factory('transitPeriodService', [
         '$http', '$log', '$q', 'cacheService',
         function ($http, $log, $q, cacheService) {
-            var urlPrefix = 'https://rest-theastrologist.rhcloud.com/rest';
+            var urlPrefix = 'http://rest-theastrologist.193b.starter-ca-central-1.openshiftapps.com/rest';
 
             var constructUri = function (natalDate, latitude, longitude, startDate, endDate) {
 

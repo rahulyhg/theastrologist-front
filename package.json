@@ -32,6 +32,6 @@
   "main": "scripts/server.js",
   "scripts": {
     "start": "node scripts/server.js",
-    "postinstall": "HOME=$OPENSHIFT_DATA_DIR && bower install"
+    "postinstall": "HOME=$OPENSHIFT_DATA_DIR && npm install -g bower && bower install"
   }
 }
