@@ -1,6 +1,6 @@
 {
   "name": "theastrologist-front",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "dependencies": {
     "angular": "^1.6.3",
     "angular-route": "^1.6.3",
