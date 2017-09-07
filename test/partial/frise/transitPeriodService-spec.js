@@ -29,7 +29,7 @@ describe('Transit Period Service ...', function () {
             var promise;
 
             beforeEach(function () {
-                $httpBackend.expectGET("https://rest-theastrologist.rhcloud.com/rest/" +
+                $httpBackend.expectGET("http://rest-theastrologist.193b.starter-ca-central-1.openshiftapps.com/rest/" +
                     "1985-01-04T11:20:00+01:00/48.6456630/2.4104510/transitperiod/2013-01-01/2017-12-31").respond(myData);
                 promise = testService('1985-01-04T11:20:00+01:00', '48.6456630', '2.4104510', '2013-01-01', '2017-12-31');
                 $httpBackend.flush();
@@ -54,7 +54,7 @@ describe('Transit Period Service ...', function () {
             var promise;
 
             beforeEach(function () {
-                $httpBackend.expectGET("https://rest-theastrologist.rhcloud.com/rest/" +
+                $httpBackend.expectGET("http://rest-theastrologist.193b.starter-ca-central-1.openshiftapps.com/rest/" +
                     "1985-01-04T11:20:00+01:00/48.6456630/2.4104510/transitperiod/2013-01-01/2017-12-31").respond(myData);
                 promise = testService('1985-01-04T11:20:00+01:00', '48.6456630', '2.4104510', '2013-01-01', '2017-12-31');
                 $httpBackend.flush();
