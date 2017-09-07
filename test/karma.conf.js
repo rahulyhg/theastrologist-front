@@ -17,16 +17,17 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'app/bower_components/angular/angular.js',
-            'app/bower_components/angular-route/angular-route.js',
-            'app/bower_components/angular-animate/angular-animate.js',
-            'app/bower_components/angular-aria/angular-aria.js',
-            'app/bower_components/moment/moment.js',
-            'app/bower_components/angular-material/angular-material.js',
-            'app/bower_components/angular-mocks/angular-mocks.js',
-            'app/bower_components/jasmine-promise-matchers/dist/jasmine-promise-matchers.js',
-            'app/bower_components/vis/dist/vis.js',
-            'app/bower_components/smDateTimeRangePicker/src/picker.js',
+            'app/lib/angular/angular.js',
+            'app/lib/angular-route/angular-route.js',
+            'app/lib/angular-animate/angular-animate.js',
+            'app/lib/angular-aria/angular-aria.js',
+            'app/lib/angular-material/angular-material.js',
+            'app/lib/angular-mocks/angular-mocks.js',
+            'app/lib/moment/moment.js',
+            'app/lib/utf8/utf8.js',
+            'app/lib/jasmine-promise-matchers/dist/jasmine-promise-matchers.js',
+            'app/lib/vis/dist/vis.js',
+            'app/lib/smdatetimerangepicker/src/picker.js',
             'app/common/src/**/*.js',
             'app/partial/**/*.js',
             'test/**/*-spec.js'

@@ -14,24 +14,45 @@
     "node": ">= 0.6.0",
     "npm": ">= 1.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "angular": "^1.6.6",
+    "angular-animate": "^1.6.6",
+    "angular-aria": "1.6.6",
+    "angular-material": "^1.1.5",
+    "angular-messages": "1.6.6",
+    "angular-route": "^1.6.6",
+    "graceful-fs": "4.1.11",
+    "requirejs": "^2.3.5",
+    "minimatch": "^3.0.4",
+    "smdatetimerangepicker": "^2.0.10",
+    "vis": "^4.19.1"
+  },
   "devDependencies": {
+    "angular-mocks": "^1.6.3",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "jasmine-core": "^2.5.2",
+    "jasmine-promise-matchers": "^2.3.0",
+    "options": "^0.0.6",
+    "socket.io": "^2.0.3",
+    "utf8": "^2.1.2",
+    "throttleit" : "^1.0.0",
+    "request-progress": "^3.0.0",
+    "ws": "3.1.0",
+    "engine.io-parser": "^2.1.1",
+    "phantomjs-prebuilt": "~2.1",
     "karma": "~1.3",
     "karma-jasmine": "~1.0",
     "karma-junit-reporter": "~1.1",
     "karma-ng-scenario": "~1.0",
-    "karma-phantomjs-launcher": "^1.0.2",
-    "phantomjs-prebuilt": "~2.1"
+    "karma-phantomjs-launcher": "^1.0.2"
   },
   "bundleDependencies": [],
   "private": true,
   "main": "scripts/server.js",
   "scripts": {
     "start": "node scripts/server.js",
-    "postinstall": "HOME=$OPENSHIFT_DATA_DIR && npm install -g bower && bower install"
+    "postinstall": "HOME=$OPENSHIFT_DATA_DIR && yarn install --modules-folder './app/lib' --production"
   }
 }
